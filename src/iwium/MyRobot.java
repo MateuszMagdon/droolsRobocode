@@ -30,6 +30,7 @@ public class MyRobot extends AdvancedRobot
 
     private int scannedX = Integer.MIN_VALUE;
     private int scannedY = Integer.MIN_VALUE;
+    private int direction = 1;
 
     private void createKnowledgeBase()
     {
@@ -116,6 +117,16 @@ public class MyRobot extends AdvancedRobot
         double angle = Math.toRadians((getHeading() + e.getBearing()) % 360);
         scannedX = (int) (getX() + Math.sin(angle) * e.getDistance());
         scannedY = (int) (getY() + Math.cos(angle) * e.getDistance());
+    }
+
+    public int getDirection()
+    {
+        return direction;
+    }
+
+    public void switchDirection()
+    {
+        direction *= -1;
     }
 
     private List<Action> retrieveActions()

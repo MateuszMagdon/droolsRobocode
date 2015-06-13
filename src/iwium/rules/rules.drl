@@ -9,18 +9,56 @@ query "actionQuery"
     action: Action()
 end
 
-rule "Robot has been hit"
+rule "Scan for enemy"
     when
-        HitByBulletEvent();
+        e : ScannedRobotEvent()
+        robot: MyRobot()
     then
-        System.err.println("has been hit!");
-
+        robot.setTurnRadarRight(robot.getHeading() - robot.getRadarHeading() + e.getBearing());
+        robot.setTurnRight(e.getBearing() + 90);
+        robot.setTurnGunRight(robot.getHeading() - robot.getGunHeading() + e.getBearing());
+        robot.setFire(10);
+        robot.execute();
 end
 
-rule "Two"
+rule "Robot has been hit"
+    when
+        e : HitByBulletEvent()
+        robot: MyRobot();
+    then
+        System.err.println("has been hit!");
+        robot.setTurnRadarRight(robot.getHeading() - robot.getRadarHeading() + e.getBearing());
+        robot.setTurnRight(e.getBearing() + 90);
+        robot.setTurnGunRight(robot.getHeading() - robot.getGunHeading() + e.getBearing());
+        robot.setFire(10);
+        robot.execute();
+end
+
+rule "Robot hit wall"
+    salience 3
+    activation-group "obstacles"
+    when
+        robot : MyRobot()
+        HitWallEvent()
+    then
+        robot.switchDirection();
+end
+
+rule "Robot hit another robot"
+    salience 2
+    activation-group "obstacles"
+    when
+        robot : MyRobot()
+        HitRobotEvent()
+    then
+        robot.switchDirection();
+end
+
+rule "Move forward"
+    salience 1
+    activation-group "motion"
     when
         robot : MyRobot();
     then
-        robot.ahead(1);
-        System.err.println("go");
+        robot.ahead(1 * robot.getDirection());
 end
