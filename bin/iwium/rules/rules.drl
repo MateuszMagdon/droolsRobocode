@@ -5,11 +5,16 @@ import robocode.*;
 
 import iwium.MyRobot;
 
+query "actionQuery"
+    action: Action()
+end
+
 rule "Robot has been hit"
     when
         HitByBulletEvent();
     then
         System.err.println("has been hit!");
+
 end
 
 rule "Two"
