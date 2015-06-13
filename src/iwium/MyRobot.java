@@ -13,7 +13,8 @@ import robocode.*;
 /**
  * Created by mateu_000 on 2015-06-13.
  */
-public class MyRobot extends AdvancedRobot{
+public class MyRobot extends AdvancedRobot
+{
 
     private static final String RULES_FILE = "iwium/rules/rules.drl";
 
@@ -38,14 +39,16 @@ public class MyRobot extends AdvancedRobot{
         kBase.addKnowledgePackages(kBuilder.getKnowledgePackages());
     }
 
-    public void run(){
+    public void run()
+    {
         createKnowledgeBase();
 
         this.setAdjustGunForRobotTurn(true);
         this.setAdjustRadarForGunTurn(true);
         this.setAdjustRadarForRobotTurn(true);
 
-        while(true) {
+        while (true)
+        {
 
             kSession = kBase.newStatefulKnowledgeSession();
 
