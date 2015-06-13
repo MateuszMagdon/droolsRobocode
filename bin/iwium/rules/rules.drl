@@ -1,0 +1,21 @@
+package iwium.rules
+
+import iwium.*;
+
+import iwium.MyRobot;
+
+rule "One"
+    when
+        MyClass();
+        //RulesRobot();
+    then
+        System.err.println("tester");
+end
+
+rule "Two"
+    when
+        robot : MyRobot();
+    then
+        robot.ahead(1);
+        System.err.println("go");
+end
