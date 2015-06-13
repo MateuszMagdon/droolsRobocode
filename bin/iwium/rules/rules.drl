@@ -1,15 +1,15 @@
 package iwium.rules
 
 import iwium.*;
+import robocode.*;
 
 import iwium.MyRobot;
 
-rule "One"
+rule "Robot has been hit"
     when
-        MyClass();
-        //RulesRobot();
+        HitByBulletEvent();
     then
-        System.err.println("tester");
+        System.err.println("has been hit!");
 end
 
 rule "Two"

@@ -8,6 +8,7 @@ import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import robocode.AdvancedRobot;
+import robocode.*;
 
 /**
  * Created by mateu_000 on 2015-06-13.
@@ -18,6 +19,10 @@ public class MyRobot extends AdvancedRobot{
 
     private KnowledgeBuilder kBuilder;
     private KnowledgeBase kBase;
+    private StatefulKnowledgeSession kSession;
+
+    int scannedX = Integer.MIN_VALUE;
+    int scannedY = Integer.MIN_VALUE;
 
     private void createKnowledgeBase()
     {
@@ -42,7 +47,7 @@ public class MyRobot extends AdvancedRobot{
 
         while(true) {
 
-            StatefulKnowledgeSession kSession = kBase.newStatefulKnowledgeSession();
+            kSession = kBase.newStatefulKnowledgeSession();
 
             kSession.insert(this);
 
@@ -51,10 +56,55 @@ public class MyRobot extends AdvancedRobot{
         }
     }
 
-    public static void main(String [] args){
-        MyRobot r = new MyRobot();
-        r.run();
+    @Override
+    public void onBulletHit(BulletHitEvent event)
+    {
+        kSession.insert(event);
+    }
 
-        System.out.print("end");
+    @Override
+    public void onBulletHitBullet(BulletHitBulletEvent event)
+    {
+        kSession.insert(event);
+    }
+
+    @Override
+    public void onBulletMissed(BulletMissedEvent event)
+    {
+        kSession.insert(event);
+    }
+
+    @Override
+    public void onHitByBullet(HitByBulletEvent event)
+    {
+        kSession.insert(event);
+    }
+
+    @Override
+    public void onHitRobot(HitRobotEvent event)
+    {
+        kSession.insert(event);
+    }
+
+    @Override
+    public void onHitWall(HitWallEvent event)
+    {
+        kSession.insert(event);
+    }
+
+    @Override
+    public void onRobotDeath(RobotDeathEvent event)
+    {
+        kSession.insert(event);
+    }
+
+    @Override
+    public void onScannedRobot(ScannedRobotEvent e)
+    {
+        kSession.insert(e);
+
+        double angle = Math.toRadians((getHeading() + e.getBearing()) % 360);
+        scannedX = (int) (getX() + Math.sin(angle) * e.getDistance());
+        scannedY = (int) (getY() + Math.cos(angle) * e.getDistance());
     }
 }
