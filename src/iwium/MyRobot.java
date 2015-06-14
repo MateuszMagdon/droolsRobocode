@@ -15,15 +15,11 @@ import robocode.*;
 public class MyRobot extends AdvancedRobot
 {
     private static final String RULES_FILE = "iwium/rules/rules.drl";
-    private static final String ACTION_QUERY_NAME = "actionQuery";
-    private static final String ACTION_QUERY_ARG = "action";
 
     private KnowledgeBuilder kBuilder;
     private KnowledgeBase kBase;
     private StatefulKnowledgeSession kSession;
 
-    private int scannedX = Integer.MIN_VALUE;
-    private int scannedY = Integer.MIN_VALUE;
     private int direction = 1;
 
     private void createKnowledgeBase()
@@ -104,10 +100,6 @@ public class MyRobot extends AdvancedRobot
     public void onScannedRobot(ScannedRobotEvent e)
     {
         kSession.insert(e);
-
-        double angle = Math.toRadians((getHeading() + e.getBearing()) % 360);
-        scannedX = (int) (getX() + Math.sin(angle) * e.getDistance());
-        scannedY = (int) (getY() + Math.cos(angle) * e.getDistance());
     }
 
     public int getDirection()

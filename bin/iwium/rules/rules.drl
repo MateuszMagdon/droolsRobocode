@@ -5,32 +5,56 @@ import robocode.*;
 
 import iwium.MyRobot;
 
-query "actionQuery"
-    action: Action()
+
+rule "Rotate radar"
+    when
+        robot: MyRobot()
+    then
+        robot.setTurnRadarRight(15);
+        robot.execute();
 end
 
-rule "Scan for enemy"
+rule "Enemy spotted"
     when
         e : ScannedRobotEvent()
         robot: MyRobot()
     then
-        robot.setTurnRadarRight(robot.getHeading() - robot.getRadarHeading() + e.getBearing());
         robot.setTurnRight(e.getBearing() + 90);
-        robot.setTurnGunRight(robot.getHeading() - robot.getGunHeading() + e.getBearing());
-        robot.setFire(10);
+
+        double radarRotation = robot.getHeading() - robot.getRadarHeading() + e.getBearing();
+        while (radarRotation >  180) radarRotation -= 360;
+        while (radarRotation < -180) radarRotation += 360;
+
+        robot.setTurnRadarRight(radarRotation);
+
+        double rotation = robot.getHeading() - robot.getGunHeading() + e.getBearing();
+        while (rotation >  180) rotation -= 360;
+        while (rotation < -180) rotation += 360;
+
+        robot.setTurnGunRight(rotation);
+
+        double firePower = Math.min(400 / e.getDistance(), 3);
+        if (robot.getGunHeat() == 0 && Math.abs(robot.getGunTurnRemaining()) < 10)
+        	robot.setFire(firePower);
+
+        robot.setAhead(10 * robot.getDirection());
+
         robot.execute();
 end
 
-rule "Robot has been hit"
+rule "Robot hit by bullet"
     when
         e : HitByBulletEvent()
         robot: MyRobot();
     then
-        System.err.println("has been hit!");
-        robot.setTurnRadarRight(robot.getHeading() - robot.getRadarHeading() + e.getBearing());
+        double radarRotation = robot.getHeading() - robot.getRadarHeading() + e.getBearing();
+        while (radarRotation >  180) radarRotation -= 360;
+        while (radarRotation < -180) radarRotation += 360;
+
         robot.setTurnRight(e.getBearing() + 90);
-        robot.setTurnGunRight(robot.getHeading() - robot.getGunHeading() + e.getBearing());
-        robot.setFire(10);
+        robot.setTurnRadarRight(radarRotation);
+        robot.setAhead(10 * robot.getDirection());
+
         robot.execute();
 end
 
