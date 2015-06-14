@@ -42,7 +42,7 @@ rule "Enemy spotted"
         robot.execute();
 end
 
-rule "Robot has been hit"
+rule "Robot hit by bullet"
     when
         e : HitByBulletEvent()
         robot: MyRobot();
@@ -51,6 +51,7 @@ rule "Robot has been hit"
         while (radarRotation >  180) radarRotation -= 360;
         while (radarRotation < -180) radarRotation += 360;
 
+        robot.setTurnRight(e.getBearing() + 90);
         robot.setTurnRadarRight(radarRotation);
         robot.setAhead(10 * robot.getDirection());
 
