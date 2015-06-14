@@ -5,11 +5,8 @@ import robocode.*;
 
 import iwium.MyRobot;
 
-query "actionQuery"
-    action: Action()
-end
 
-rule "scan"
+rule "Rotate radar"
     when
         robot: MyRobot()
     then
@@ -17,7 +14,7 @@ rule "scan"
         robot.execute();
 end
 
-rule "Scan for enemy"
+rule "Enemy spotted"
     when
         e : ScannedRobotEvent()
         robot: MyRobot()
@@ -36,9 +33,9 @@ rule "Scan for enemy"
 
         robot.setTurnGunRight(rotation);
 
-        System.err.println(robot.getHeading() - robot.getRadarHeading() + e.getBearing());
-        System.err.println(robot.getHeading() - robot.getGunHeading() + e.getBearing());
-        robot.setFire(3);
+        double firePower = Math.min(400 / e.getDistance(), 3);
+        if (robot.getGunHeat() == 0 && Math.abs(robot.getGunTurnRemaining()) < 10)
+        	robot.setFire(firePower);
 
         robot.setAhead(10 * robot.getDirection());
 
