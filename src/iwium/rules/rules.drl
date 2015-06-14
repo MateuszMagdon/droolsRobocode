@@ -9,15 +9,39 @@ query "actionQuery"
     action: Action()
 end
 
+rule "scan"
+    when
+        robot: MyRobot()
+    then
+        robot.setTurnRadarRight(15);
+        robot.execute();
+end
+
 rule "Scan for enemy"
     when
         e : ScannedRobotEvent()
         robot: MyRobot()
     then
-        robot.setTurnRadarRight(robot.getHeading() - robot.getRadarHeading() + e.getBearing());
         robot.setTurnRight(e.getBearing() + 90);
-        robot.setTurnGunRight(robot.getHeading() - robot.getGunHeading() + e.getBearing());
+
+        double radarRotation = robot.getHeading() - robot.getRadarHeading() + e.getBearing();
+        while (radarRotation >  180) radarRotation -= 360;
+        while (radarRotation < -180) radarRotation += 360;
+
+        robot.setTurnRadarRight(radarRotation);
+
+        double rotation = robot.getHeading() - robot.getGunHeading() + e.getBearing();
+        while (rotation >  180) rotation -= 360;
+        while (rotation < -180) rotation += 360;
+
+        robot.setTurnGunRight(rotation);
+
+        System.err.println(robot.getHeading() - robot.getRadarHeading() + e.getBearing());
+        System.err.println(robot.getHeading() - robot.getGunHeading() + e.getBearing());
         robot.setFire(10);
+
+        robot.setAhead(10);
+
         robot.execute();
 end
 
@@ -26,11 +50,13 @@ rule "Robot has been hit"
         e : HitByBulletEvent()
         robot: MyRobot();
     then
-        System.err.println("has been hit!");
-        robot.setTurnRadarRight(robot.getHeading() - robot.getRadarHeading() + e.getBearing());
-        robot.setTurnRight(e.getBearing() + 90);
-        robot.setTurnGunRight(robot.getHeading() - robot.getGunHeading() + e.getBearing());
-        robot.setFire(10);
+        double radarRotation = robot.getHeading() - robot.getRadarHeading() + e.getBearing();
+        while (radarRotation >  180) radarRotation -= 360;
+        while (radarRotation < -180) radarRotation += 360;
+
+        robot.setTurnRadarRight(radarRotation);
+        robot.setAhead(10 * robot.getDirection());
+
         robot.execute();
 end
 
