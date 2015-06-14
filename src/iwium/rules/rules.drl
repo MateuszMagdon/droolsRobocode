@@ -38,9 +38,9 @@ rule "Scan for enemy"
 
         System.err.println(robot.getHeading() - robot.getRadarHeading() + e.getBearing());
         System.err.println(robot.getHeading() - robot.getGunHeading() + e.getBearing());
-        robot.setFire(10);
+        robot.setFire(3);
 
-        robot.setAhead(10);
+        robot.setAhead(10 * robot.getDirection());
 
         robot.execute();
 end
